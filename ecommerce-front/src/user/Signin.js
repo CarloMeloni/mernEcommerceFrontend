@@ -1,10 +1,11 @@
 import React from 'react';
+import Layout from '../core/Layout';
 
 const Signin = () => {
     return (
-        <div>
+        <Layout title="LOGIN" description="Sign in">
             Signin
-        </div>
+        </Layout>
     )
 };
 
