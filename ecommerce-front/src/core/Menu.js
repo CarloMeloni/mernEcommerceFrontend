@@ -18,7 +18,7 @@ const Menu = (props) => {
                     <Link className="nav-link" style={isActive(props.history, '/')} to="/">HOME</Link>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link" style={isActive(props.history, '/dashboard')} to="/dashboard">DASHBOARD</Link>
+                    <Link className="nav-link" style={isActive(props.history, '/user/dashboard')} to="/user/dashboard">DASHBOARD</Link>
                 </li>
                 {!isAuthenticated() && (<li className="nav-item">
                     <Link className="nav-link" style={isActive(props.history, '/signin')} to="/signin">SIGNIN</Link>
