@@ -35,10 +35,10 @@ const AdminDashboard = () => {
         <Layout title="Dashboard" description={`Hey ${name}`} className="container-fluid">
             <div className="row">
                 <div className="col-3">
-                    {adminLinks()}
+                    {AdminLinks()}
                 </div>
                 <div className="col-9">
-                    {adminInfo()}
+                    {AdminInfo()}
                 </div>
             </div>
             

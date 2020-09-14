@@ -17,9 +17,12 @@ const Menu = (props) => {
                 <li className="nav-item">
                     <Link className="nav-link" style={isActive(props.history, '/')} to="/">HOME</Link>
                 </li>
-                <li className="nav-item">
+                {isAuthenticated() && isAuthenticated().user.role === 0 && (<li className="nav-item">
                     <Link className="nav-link" style={isActive(props.history, '/user/dashboard')} to="/user/dashboard">DASHBOARD</Link>
-                </li>
+                </li>)}
+                {isAuthenticated() && isAuthenticated().user.role === 1 && (<li className="nav-item">
+                    <Link className="nav-link" style={isActive(props.history, '/admin/dashboard')} to="/admin/dashboard">ADMIN DASHBOARD</Link>
+                </li>)}
                 {!isAuthenticated() && (<li className="nav-item">
                     <Link className="nav-link" style={isActive(props.history, '/signin')} to="/signin">SIGNIN</Link>
                 </li>)}
