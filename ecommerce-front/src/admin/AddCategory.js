@@ -63,7 +63,7 @@ const AddCategory = () => {
     return (
         <Layout title="Add a New Category" description={`Hey ${user.name}, add a new category here`}>
             <div className="row">
-                <div className="col-md-8 offset-md2">
+                <div className="col-md-8 offset-md-2">
                     {showSuccess()}
                     {showError()}
                     {newCategoryForm()}
