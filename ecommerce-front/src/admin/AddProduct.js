@@ -48,7 +48,19 @@ const AddProduct = () => {
         setValues({...values, [name]: value});
     }
 
-    const clickSubmit = event => {};
+    const clickSubmit = event => {
+        event.preventDefault();
+        setValues({ ...values, error: '', loading: true });
+
+        createProduct( user._id, token, formData )
+            .then(data => {
+                if(data.error) {
+                    setValues({ ...values, error: data.error })
+                } else {
+                    setValues({ ...values, name: '', description: '', photo: '', price: '', quantity: '', loading: false, createdProduct: data.name })
+                }
+            })
+    };
 
     const newPostForm = () => (
         <form className="mb-3" onSubmit={clickSubmit}>
@@ -76,14 +88,15 @@ const AddProduct = () => {
 
             <div className="form-group">
                 <label className="text-muted">Category</label>
-                <select onChange={handleChange('category')} className="form-control">
+                <select onChange={handleChange('category')} className="form-control" value={category}>
+                    <option value="5f60c8c8b659be23b43d9aef">Node</option>
                     <option value="5f60c8c8b659be23b43d9aef">Node</option>
                 </select>
             </div>
 
             <div className="form-group">
                 <label className="text-muted">Shipping</label>
-                <select onChange={handleChange('shipping')} className="form-control">
+                <select onChange={handleChange('shipping')} className="form-control" value={shipping}>
                     <option value="0">NO</option>
                     <option value="1">YES</option>
                 </select>
