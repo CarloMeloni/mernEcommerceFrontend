@@ -5,6 +5,9 @@ import { getCategories } from './apiCore';
 import Checkbox from './Checkbox';
 
 const Shop = () => {
+    const [ myFilters, setMyFilters ] = useState({
+        filters: { category: [], price: [] }
+    });
     const [ categories, setCategories ] = useState([]);
     const [ error, setError ] = useState(false);
 
@@ -22,7 +25,13 @@ const Shop = () => {
 
     useEffect(() => {
         init();
-    }, [])
+    }, []);
+
+    const handleFilters = (filters, filterBy) => {
+        const newFilters = { ...myFilters };
+        newFilters.filters[filterBy] = filters;
+        setMyFilters(newFilters);
+    };
 
     return (
         <Layout title="SHOP" description="SEARCH AND FIND PRODUCT OF YOUR CHOICE">
@@ -30,10 +39,12 @@ const Shop = () => {
                 <div className="col-4">
                     <h4>Filter By categories</h4>
                     <ul>
-                        <Checkbox categories={categories} />
+                        <Checkbox categories={categories} handleFilters={filters => handleFilters(filters, 'category')} />
                     </ul>
                 </div>
-                <div className="col-8">right</div>
+                <div className="col-8">
+                    {JSON.stringify(myFilters)}
+                </div>
             </div>
         </Layout>
     )
