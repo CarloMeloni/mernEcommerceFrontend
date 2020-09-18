@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
 import Card from './Card';
-import { getCategories } from './apiCore';
+import { getCategories, getFilteredProducts } from './apiCore';
 import Checkbox from './Checkbox';
 import { prices } from './FixedPrices';
 import RadioBox from './RadioBox';
@@ -12,9 +12,12 @@ const Shop = () => {
     });
     const [ categories, setCategories ] = useState([]);
     const [ error, setError ] = useState(false);
+    const [ limit, setLimit ] = useState(6);
+    const [ skip, setSkip ] = useState(0);
+    const [ filteredResult, setFilteredResult ] = useState(0);
 
      //LOAD CATEGORIES AND SET FORM DATA
-     const init = () => {
+    const init = () => {
         getCategories()
             .then(data => {
                 if(data.error) {
@@ -25,8 +28,20 @@ const Shop = () => {
             })
     };
 
+    const loadFilteredResult = (newFilters) => {
+        getFilteredProducts(skip, limit, newFilters)
+            .then(data => {
+                if(data.error) {
+                    setError(data.error); 
+                } else {
+                    setFilteredResult(data);
+                }
+            })
+    };
+
     useEffect(() => {
         init();
+        loadFilteredResult(skip, limit, myFilters.filters)
     }, []);
 
     const handleFilters = (filters, filterBy) => {
@@ -37,7 +52,7 @@ const Shop = () => {
             let priceValues = handlePrice(filters);
             newFilters.filters[filterBy] = priceValues;
         }
-
+        loadFilteredResult(myFilters.filters);
         setMyFilters(newFilters);
     };
 
@@ -50,7 +65,6 @@ const Shop = () => {
                 arr = data[key].array;
             }
         }
-
         return arr;
     }; 
 
@@ -69,7 +83,7 @@ const Shop = () => {
                     </div>
                 </div>
                 <div className="col-8">
-                    {JSON.stringify(myFilters)}
+                    {JSON.stringify(filteredResult)}
                 </div>
             </div>
         </Layout>
