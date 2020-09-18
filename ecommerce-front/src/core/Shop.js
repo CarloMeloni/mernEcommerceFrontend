@@ -4,6 +4,7 @@ import Card from './Card';
 import { getCategories } from './apiCore';
 import Checkbox from './Checkbox';
 import { prices } from './FixedPrices';
+import RadioBox from './RadioBox';
 
 const Shop = () => {
     const [ myFilters, setMyFilters ] = useState({
@@ -42,6 +43,11 @@ const Shop = () => {
                     <ul>
                         <Checkbox categories={categories} handleFilters={filters => handleFilters(filters, 'category')} />
                     </ul>
+
+                    <h4>Filter By Price Range</h4>
+                    <div>
+                        <RadioBox prices={prices} handleFilters={filters => handleFilters(filters, 'price')} />
+                    </div>
                 </div>
                 <div className="col-8">
                     {JSON.stringify(myFilters)}
