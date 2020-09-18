@@ -32,8 +32,27 @@ const Shop = () => {
     const handleFilters = (filters, filterBy) => {
         const newFilters = { ...myFilters };
         newFilters.filters[filterBy] = filters;
+
+        if(filterBy == 'price') {
+            let priceValues = handlePrice(filters);
+            newFilters.filters[filterBy] = priceValues;
+        }
+
         setMyFilters(newFilters);
     };
+
+    const handlePrice = value => {
+        const data = prices;
+        let arr = [];
+
+        for(let key in data) {
+            if(data[key]._id === parseInt(value)) {
+                arr = data[key].array;
+            }
+        }
+
+        return arr;
+    }; 
 
     return (
         <Layout title="SHOP" description="SEARCH AND FIND PRODUCT OF YOUR CHOICE">
