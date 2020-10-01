@@ -56,6 +56,14 @@ const Search = () => {
        setData({ ...data, [name]: event.target.value, searched: false })
     };
 
+    const searchedProducts = (results = []) => (
+        <div className="row">
+            {results.map((product, idx) => (
+                <Card key={idx} product={product} />
+            ))}
+        </div>
+    );
+
     const searchForm = () => (
         <form onSubmit={searchSubmit}>
             <span className="input-group-text">
@@ -81,8 +89,10 @@ const Search = () => {
         <div className="row">
             <div className="container mb-3">
                 {searchForm()}
-                {JSON.stringify(result)}
-                </div>
+            </div>
+            <div className="container-fluid mb-3">
+                {searchedProducts(result)}
+            </div>
         </div>
     )
 };
