@@ -56,11 +56,24 @@ const Search = () => {
        setData({ ...data, [name]: event.target.value, searched: false })
     };
 
-    const searchedProducts = (results = []) => (
-        <div className="row">
-            {results.map((product, idx) => (
-                <Card key={idx} product={product} />
-            ))}
+    const searchMessage = (searched, result) => {
+        if(searched && result.length > 0) {
+            return `Found ${result.length} products`;
+        }
+
+        if(searched && result.length < 1) {
+            return `No products found!`;
+        }
+    };
+
+    const searchedProducts = (result = []) => (
+        <div>
+            <h2 className="mt-4 mb-4">{searchMessage(searched, result)}</h2>
+            <div className="row">
+                {result.map((product, idx) => (
+                    <Card key={idx} product={product} />
+                ))}
+            </div>
         </div>
     );
 
@@ -70,7 +83,7 @@ const Search = () => {
                 <div className="input-group input-group-lg">
                     <div className="input-group-prepend">
                         <select className="btn mr-2" onChange={handleChange('category')}>
-                            <option value="All">Choose a category</option>
+                            <option value="All">All</option>
                             {categories.map((categ, idx) => (
                                 <option key={idx} value={categ._id}>{categ.name}</option>
                             ))}
