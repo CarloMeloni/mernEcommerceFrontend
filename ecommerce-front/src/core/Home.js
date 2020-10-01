@@ -37,7 +37,7 @@ const Home = () => {
     }, []);
 
     return (
-        <Layout title="HOME" description="NODE REACT E-COMMERCE WEB APPLICATION">
+        <Layout className="container-fluid" title="HOME" description="NODE REACT E-COMMERCE WEB APPLICATION">
             <Search />
             <h2 className="mb-5">New Arrivals</h2>
             <div className="row">
