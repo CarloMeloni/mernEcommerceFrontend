@@ -2,6 +2,16 @@
     border-radius: 0px;
 }
 
+/*Cart badge*/
+.cart-badge,
+.cart-badge:hover {
+    background-color: rgb(128, 0, 0);
+    padding: 3px;
+    font-size: 12px;
+    font-style: italic;
+    border-radius: 50%
+}
+
 /*PRODUCT IMAGE ON CART*/
 .product-img {
     min-height: 100px;
