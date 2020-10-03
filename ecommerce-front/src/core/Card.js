@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import ShowImage from './ShowImage'
 import moment from 'moment';
-import { addItem, updateItem } from './cartHelpers';
+import { addItem, updateItem, removeItem } from './cartHelpers';
 
-const Card = ({ product, showViewProductButton = true, showAddToCartButton = true, cartUpdate = false }) => {
+const Card = ({ product, showViewProductButton = true, showAddToCartButton = true, cartUpdate = false, showRemoveProductButton = false, setRun = f => f, run = undefined }) => {
     const [redirect, setRedirect] = useState(false);
     const [count, setCount] = useState(product.count);
 
@@ -33,7 +33,18 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
         </div>
     };
 
-    const addToCart = () => {
+    const showRemoveButton = (showRemoveProductButton) => {
+        return showRemoveProductButton && 
+        (<button onClick={() => { 
+                    removeItem(product._id);  
+                    setRun(!run);
+                    }}  
+                className="btn btn-outline-danger mt-2 mb-2">
+                    Remove product
+        </button>)
+    };
+
+    const addToCart = () => { 
         addItem(product, () => {
             setRedirect(true);
         })
@@ -61,6 +72,7 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
                         {showViewProductButton && <button  className="btn btn-outline-primary mt-2 mb-2 mr-2">View Product</button>}
                     </Link>
                     {showAddToCartButton && <button onClick={addToCart} className="btn btn-outline-warning mt-2 mb-2">Add To Cart</button>}
+                    {showRemoveButton(showRemoveProductButton)}
                     {showCartUpdateOptions(cartUpdate)}
                 </div>
             </div>
