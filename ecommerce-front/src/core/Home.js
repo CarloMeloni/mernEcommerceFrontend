@@ -40,7 +40,7 @@ const Home = () => {
         <Layout className="container-fluid" title="HOME" description="NODE REACT E-COMMERCE WEB APPLICATION">
             <Search />
             <h2 className="mb-5">New Arrivals</h2>
-            <div className="row">
+            <div className="row mb-5">
                 {productsByArrival.map((product, idx) => (
                     <div key={idx} className="col-3 mb-3">
                         <Card product={product} />
@@ -49,7 +49,7 @@ const Home = () => {
             </div>
 
             <h2 className="mb-5">Best Sellers</h2>
-            <div className="row">
+            <div className="row mb-5">
                 {productsBySell.map((product, idx) => (
                     <div key={idx} className="col-3 mb-3">
                         <Card product={product} />
