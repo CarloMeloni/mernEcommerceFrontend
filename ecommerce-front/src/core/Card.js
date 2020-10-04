@@ -14,12 +14,13 @@ const Card = ({ product, showViewProductButton = true, showAddToCartButton = tru
             : <span className="badge badge-primary badge-pill">Out of stock</span> 
     };
 
-    const handleChange = id => event => {
+    const handleChange = productId => event => {
+        setRun(!run); // run useEffect in parent Cart
         setCount(event.target.value < 1 ? 1 : event.target.value);
-        if(event.target.value >= 1) {
-            updateItem(id, event.target.value)
+        if (event.target.value >= 1) {
+          updateItem(productId, event.target.value);
         }
-    }
+      };
 
     const showCartUpdateOptions = (cartUpdate) => {
         return cartUpdate && 
