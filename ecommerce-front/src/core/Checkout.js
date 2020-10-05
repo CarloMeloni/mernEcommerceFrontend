@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
-import { getProducts, getBraintreeClientToken } from './apiCore';
+import { getProducts, getBraintreeClientToken, processPayment } from './apiCore';
 import Card from './Card';
 import Search from './Search';
 import {isAuthenticated} from '../auth/index';
@@ -25,7 +25,7 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
                 if(data.error) {
                     setData({ ...data, error: data.error });
                 } else {
-                    setData({ ...data, clientToken: data.clientToken });
+                    setData({ clientToken: data.clientToken });
                 }
             })
     };
@@ -57,14 +57,29 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
         let nonce;
         let getNonce = data.instance.requestPaymentMethod()
             .then(data => {
-                console.log(data);
+                //console.log(data);
                 nonce = data.nonce;
+
                 //ONCE YOU HAVE NONCE (CARD TYPE, CARD NUMBER) SEND NOCE AS 'paymentMethodNonce';
                 //AND ALSO THE TOTAL TO BE CHARGED
-                console.log(nonce, getTotal(products));
+                //console.log(nonce, getTotal(products));
+                const paymentData = {
+                    paymentMethodNonce: nonce,
+                    amount: getTotal(products)
+                };
+
+                processPayment(userId, token, paymentData)
+                    .then(response => {
+                        //console.log(response);
+                        setData({ ...data, success: response.success });
+                        //EMPTY CART
+                        //CREATE A NEW ORDER
+                        
+                    })
+                    .catch(err => console.log(err));
             })
             .catch(err => {
-                console.log('error', err);
+                //console.log('error', err);
                 setData({ ...data, error: err.message });
             }) 
 
@@ -80,7 +95,7 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
                          }}
                             onInstance={(instance) => data.instance = instance}
                           />
-                        <button onClick={buy} className="btn btn-success">Pay</button>
+                        <button onClick={buy} className="btn btn-success btn-block">Pay</button>
                     </div>
                 ) 
                 : null}
@@ -93,10 +108,17 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
         </div>
     );
 
+    const showSuccess = success => (
+        <div className="alert alert-info" style={{ display: success ? '' : 'none' }}>
+            Thank you! Payment was successful.
+        </div>
+    );
+
     return (
         <div>
            <h2>Total: £{getTotal()}</h2>
             {showError(data.error)}
+            {showSuccess(data.success)}
             {showCheckout()}
         </div>
     )

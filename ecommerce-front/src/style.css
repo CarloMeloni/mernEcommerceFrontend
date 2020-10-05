@@ -17,10 +17,6 @@
     min-height: 100px;
 }
 
-.jumbotron h2 {
-    margin-top: -20px;
-}
-
 @media only screen and (max-width: 600px) {
     .jumbotron h2 {
         margin-top: -10px;
@@ -79,3 +75,5 @@
         background-position: 0% 50%;
     }
 }
+
+
