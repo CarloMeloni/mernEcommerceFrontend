@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Layout from './Layout';
-import { getProducts, getBraintreeClientToken, processPayment } from './apiCore';
+import { getProducts, getBraintreeClientToken, processPayment, createOrder} from './apiCore';
 import { emptyCart } from './cartHelpers';
 import {isAuthenticated} from '../auth/index';
 import { Link } from 'react-router-dom';
@@ -33,6 +33,10 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
         getToken(userId, token);
     }, []);
 
+    const handleAddress = (event) => {
+        setData({ ...data, address: event.target.value })
+    }
+
     const getTotal = () => {
         return products.reduce((currentValue, nextValue) => {
             return currentValue + nextValue.count * nextValue.price;
@@ -50,47 +54,79 @@ const Checkout = ({ products, setRun = f => f, run = undefined }) => {
             </Link>
         )};
 
-    const buy = () => {
-        //SEND THE NONCE(THE PAYMENT METHOD) TO THE BACKEND
-        //nonce = data.instance.requestPaymentMethod();
-        let nonce;
-        let getNonce = data.instance.requestPaymentMethod()
-            .then(data => {
-                //console.log(data);
-                nonce = data.nonce;
-
-                //ONCE YOU HAVE NONCE (CARD TYPE, CARD NUMBER) SEND NOCE AS 'paymentMethodNonce';
-                //AND ALSO THE TOTAL TO BE CHARGED
-                //console.log(nonce, getTotal(products));
-                const paymentData = {
-                    paymentMethodNonce: nonce,
-                    amount: getTotal(products)
-                };
-
-                processPayment(userId, token, paymentData)
-                    .then(response => {
-                        //console.log(response);
-                        setData({ ...data, success: response.success });
-
-                        //EMPTY CART
-                        emptyCart(() => { setRun(!run) });
-                        //CREATE A NEW ORDER
-                        
-                    })
-                    .catch(err => console.log(err));
-            })
-            .catch(err => {
-                //console.log('error', err);
-                setData({ ...data, error: err.message });
-            }) 
-
-    }; 
+        let deliveryAddress = data.address;
+ 
+        const buy = () => {
+            setData({ loading: true });
+            // send the nonce to your server
+            // nonce = data.instance.requestPaymentMethod()
+            let nonce;
+            let getNonce = data.instance
+                .requestPaymentMethod()
+                .then(data => {
+                    // console.log(data);
+                    nonce = data.nonce;
+                    // once you have nonce (card type, card number) send nonce as 'paymentMethodNonce'
+                    // and also total to be charged
+                    // console.log(
+                    //     "send nonce and total to process: ",
+                    //     nonce,
+                    //     getTotal(products)
+                    // );
+                    const paymentData = {
+                        paymentMethodNonce: nonce,
+                        amount: getTotal(products)
+                    };
+     
+                    processPayment(userId, token, paymentData)
+                        .then(response => {
+                            console.log(response);
+                            // empty cart
+                            // create order
+     
+                            const createOrderData = {
+                                products: products,
+                                transaction_id: response.transaction.id,
+                                amount: response.transaction.amount,
+                                address: deliveryAddress
+                            };
+     
+                            createOrder(userId, token, createOrderData)
+                                .then(response => {
+                                    emptyCart(() => {
+                                        setRun(!run); // run useEffect in parent Cart
+                                        console.log('payment success and empty cart');
+                                        setData({
+                                            loading: false,
+                                            success: true
+                                        });
+                                    });
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                    setData({ loading: false });
+                                });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                            setData({ loading: false });
+                        });
+                })
+                .catch(error => {
+                    // console.log("dropin error: ", error);
+                    setData({ ...data, error: error.message });
+                });
+        };
 
     const showDropIn = () => (
         <div onBlur={() => setData({ ...data, error: '' })}>
             {data.clientToken !== null && products.length > 0 
                 ? (
                     <div>
+                        <div className="form-group mb-3">
+                            <label className="text-muted">Delivery Address:</label>
+                            <textarea onChange={handleAddress} className="form-control" value={data.address} placeholder="Type your address here" />
+                        </div>
                         <DropIn options={{
                             authorization: data.clientToken,
                             paypal: {
