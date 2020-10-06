@@ -21,14 +21,14 @@ const Home = () => {
     };
 
     const loadProductsByArrival = () => {
-        getProducts('createdAt')
-            .then(data => {
-                if(data.error) {
-                    setError(data.error);
-                } else {
-                    setProductByArrival(data);
-                }
-            })
+        getProducts('sold').then(data => {
+            console.log(data);
+            if (data.error) {
+                setError(data.error);
+            } else {
+                setProductByArrival(data);
+            }
+        });
     };
 
     useEffect(() => {
@@ -40,10 +40,10 @@ const Home = () => {
         <Layout className="container-fluid" title="HOME" description="NODE REACT E-COMMERCE WEB APPLICATION">
             
             <Search />
-            <h2 className="mb-5">New Arrivals</h2>
-            <div className="row mb-5">
-                {productsByArrival.map((product, idx) => (
-                    <div key={idx} className="col-3 mb-3">
+            <h2 className="mb-4">New Arrivals</h2>
+            <div className="row">
+                {productsByArrival.map((product, i) => (
+                    <div key={i} className="col-4 mb-3">
                         <Card product={product} />
                     </div>
                 ))}
